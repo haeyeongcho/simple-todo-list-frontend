@@ -1,8 +1,18 @@
+// src/App.js
+import { Container } from "@mui/material";
+import React from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Auth from "./pages/Auth";
+
 function App() {
   return (
-    <div className="App">
-      <h1>Hello, World!</h1>
-    </div>
+    <Container sx={{ p: 5 }} maxWidth="lg">
+      <Router>
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+        </Routes>
+      </Router>
+    </Container>
   );
 }
 
