@@ -96,6 +96,11 @@ const TodoList = () => {
         margin="normal"
         value={taskTitle}
         onChange={(e) => setTaskTitle(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            addTodo();
+          }
+        }}
       />
       <TextField
         label="설명"
@@ -104,6 +109,11 @@ const TodoList = () => {
         margin="normal"
         value={taskDescription}
         onChange={(e) => setTaskDescription(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            addTodo();
+          }
+        }}
       />
       <Button variant="contained" color="primary" onClick={addTodo}>
         추가
