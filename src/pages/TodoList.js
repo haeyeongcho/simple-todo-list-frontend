@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   addTask,
@@ -23,6 +23,7 @@ const TodoList = () => {
   const [taskDescription, setTaskDescription] = useState("");
   const [todos, setTodos] = useState([]);
   const [showCompleted, setShowCompleted] = useState(false);
+  const taskInputRef = useRef(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -50,6 +51,7 @@ const TodoList = () => {
         setTodos([...todos, response]);
         setTaskTitle("");
         setTaskDescription("");
+        taskInputRef.current.focus();
       } catch (error) {
         console.error("작업 추가 실패:", error);
       }
@@ -101,6 +103,7 @@ const TodoList = () => {
             addTodo();
           }
         }}
+        inputRef={taskInputRef}
       />
       <TextField
         label="설명"
