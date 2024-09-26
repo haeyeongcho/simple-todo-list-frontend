@@ -1,4 +1,11 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
@@ -9,11 +16,21 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 이메일과 비밀번호가 비어있는지 확인
+    if (!email.trim() || !password.trim()) {
+      setSnackbarMessage("이메일과 비밀번호를 입력해주세요.");
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       if (isLogin) {
         // login
@@ -28,8 +45,14 @@ const Auth = () => {
         setIsLogin(true);
       }
     } catch (error) {
+      setSnackbarMessage("요청 실패: " + error.message);
+      setSnackbarOpen(true);
       console.error("요청 실패: ", error);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -65,6 +88,14 @@ const Auth = () => {
           </Button>
         </Box>
       </form>
+
+      {/* Snackbar 컴포넌트 */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
     </Container>
   );
 };
