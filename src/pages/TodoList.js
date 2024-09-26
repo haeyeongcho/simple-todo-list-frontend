@@ -160,7 +160,11 @@ const TodoList = () => {
         onClick={() => setShowCompleted(!showCompleted)}
         sx={{ ml: 2 }}
       >
-        {showCompleted ? "완료된 작업 숨기기" : "완료된 작업 같이보기"}
+        {showCompleted
+          ? "완료된 작업 숨기기"
+          : `완료된 작업 보기 (${
+              todos.filter((todo) => todo.isComplete).length
+            })`}
       </Button>
       <List>
         {/* 완료되지 않은 작업들을 먼저 렌더링 */}
