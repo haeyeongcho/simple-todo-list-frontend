@@ -31,6 +31,13 @@ const Auth = () => {
       return;
     }
 
+    // 비밀번호 길이 체크
+    if (password.length < 6) {
+      setSnackbarMessage("비밀번호는 최소 6자리 이상이어야 합니다.");
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       if (isLogin) {
         // login
