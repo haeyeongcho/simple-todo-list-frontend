@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -27,6 +28,8 @@ const TodoList = () => {
   const [editTaskDescription, setEditTaskDescription] = useState("");
   const [todos, setTodos] = useState([]);
   const [showCompleted, setShowCompleted] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar 상태 추가
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar 메시지 상태 추가
   const taskInputRef = useRef(null);
 
   useEffect(() => {
@@ -42,23 +45,27 @@ const TodoList = () => {
   }, [userId]);
 
   const addTodo = async () => {
-    if (taskTitle) {
-      const newTask = {
-        userId: userId,
-        title: taskTitle,
-        description: taskDescription,
-        isComplete: false,
-      };
+    if (!taskTitle) {
+      setSnackbarMessage("할 일 제목을 입력해주세요."); // 메시지 설정
+      setSnackbarOpen(true); // Snackbar 열기
+      return;
+    }
 
-      try {
-        const response = await addTask(newTask);
-        setTodos([...todos, response]);
-        setTaskTitle("");
-        setTaskDescription("");
-        taskInputRef.current.focus();
-      } catch (error) {
-        console.error("작업 추가 실패:", error);
-      }
+    const newTask = {
+      userId: userId,
+      title: taskTitle,
+      description: taskDescription,
+      isComplete: false,
+    };
+
+    try {
+      const response = await addTask(newTask);
+      setTodos([...todos, response]);
+      setTaskTitle("");
+      setTaskDescription("");
+      taskInputRef.current.focus();
+    } catch (error) {
+      console.error("작업 추가 실패:", error);
     }
   };
 
@@ -106,6 +113,10 @@ const TodoList = () => {
         console.error("작업 삭제 실패:", error);
       }
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -268,6 +279,14 @@ const TodoList = () => {
               </ListItem>
             ))}
       </List>
+
+      {/* Snackbar 컴포넌트 추가 */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
     </Container>
   );
 };
