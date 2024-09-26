@@ -35,7 +35,6 @@ export const login = async (userLoginDto) => {
   } catch (error) {
     if (error.response) {
       const { status, data } = error.response;
-      console.log(status);
       if (status === 401) {
         throw new Error(
           "로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요."
