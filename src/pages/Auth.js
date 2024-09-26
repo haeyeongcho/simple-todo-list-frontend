@@ -1,12 +1,15 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import { login, signup } from "../apis/userApi";
+import { authState } from "../atoms/authState";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
+  const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,6 +19,7 @@ const Auth = () => {
         // login
         const response = await login({ email, password });
         console.log("로그인 성공", response);
+        setAuth({ isLoggedIn: true, userId: response.userId });
         navigate(`/todos/${response.userId}`);
       } else {
         // signup
