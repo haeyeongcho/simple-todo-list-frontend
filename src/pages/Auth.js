@@ -91,7 +91,7 @@ const Auth = () => {
             {isLogin ? "로그인" : "회원가입"}
           </Button>
           <Button onClick={() => setIsLogin(!isLogin)} color="primary">
-            {isLogin ? "회원가입 하세요" : "로그인 하세요"}
+            {isLogin ? "회원가입" : "로그인"}
           </Button>
         </Box>
       </form>
