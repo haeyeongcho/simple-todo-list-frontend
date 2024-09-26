@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Checkbox,
   Container,
@@ -21,6 +22,9 @@ const TodoList = () => {
   const { userId } = useParams();
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
+  const [isEditing, setIsEditing] = useState("");
+  const [editTaskTitle, setEditTaskTitle] = useState("");
+  const [editTaskDescription, setEditTaskDescription] = useState("");
   const [todos, setTodos] = useState([]);
   const [showCompleted, setShowCompleted] = useState(false);
   const taskInputRef = useRef(null);
@@ -72,6 +76,24 @@ const TodoList = () => {
         console.error("작업 상태 업데이트 실패:", error);
       }
     }, 500);
+  };
+
+  const handleUpdate = async (taskId) => {
+    const updatedTask = {
+      ...todos.find((todo) => todo.taskId === taskId),
+      title: editTaskTitle,
+      description: editTaskDescription,
+    };
+
+    try {
+      await updateTask(taskId, updatedTask);
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) => (todo.taskId === taskId ? updatedTask : todo))
+      );
+      setIsEditing(null); // 수정 완료 후 수정 상태 초기화
+    } catch (error) {
+      console.error("작업 수정 실패:", error);
+    }
   };
 
   const handleDelete = async (taskId) => {
@@ -134,20 +156,86 @@ const TodoList = () => {
         {todos
           .filter((todo) => !todo.isComplete)
           .map((todo) => (
-            <ListItem key={todo.taskId} sx={{ mb: 1 }}>
-              <Checkbox
-                checked={todo.isComplete}
-                onChange={() => toggleComplete(todo.taskId)}
-              />
-              <ListItemText primary={todo.title} secondary={todo.description} />
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={() => handleDelete(todo.taskId)}
-              >
-                삭제
-              </Button>
-            </ListItem>
+            <React.Fragment key={todo.taskId}>
+              <ListItem sx={{ mb: 1 }}>
+                <Checkbox
+                  checked={todo.isComplete}
+                  onChange={() => toggleComplete(todo.taskId)}
+                />
+                <ListItemText
+                  primary={todo.title}
+                  secondary={todo.description}
+                />
+                <Button
+                  variant="outlined"
+                  color="info"
+                  onClick={() => {
+                    if (isEditing === todo.taskId) {
+                      setIsEditing(null);
+                    } else {
+                      setIsEditing(todo.taskId);
+                      setEditTaskTitle(todo.title);
+                      setEditTaskDescription(todo.description);
+                    }
+                  }}
+                >
+                  {isEditing === todo.taskId ? "수정 취소" : "수정"}
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleDelete(todo.taskId)}
+                >
+                  삭제
+                </Button>
+              </ListItem>
+
+              {/* 수정폼 렌더링 */}
+              {isEditing === todo.taskId && (
+                <Box sx={{ mt: 1, display: "flex", flexDirection: "column" }}>
+                  <TextField
+                    label="수정 제목"
+                    variant="outlined"
+                    fullWidth
+                    value={editTaskTitle}
+                    onChange={(e) => setEditTaskTitle(e.target.value)}
+                    margin="normal"
+                  />
+                  <TextField
+                    label="수정 설명"
+                    variant="outlined"
+                    fullWidth
+                    value={editTaskDescription}
+                    onChange={(e) => setEditTaskDescription(e.target.value)}
+                    margin="normal"
+                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      mt: 1,
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleUpdate(todo.taskId)}
+                    >
+                      저장
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={() => setIsEditing(null)}
+                      sx={{ ml: 2 }} // 두 버튼 사이의 간격
+                    >
+                      취소
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+            </React.Fragment>
           ))}
 
         {/* showCompleted가 true일 때 완료된 작업 렌더링 */}
