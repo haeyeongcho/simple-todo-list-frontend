@@ -49,6 +49,8 @@ const Auth = () => {
         // signup
         const response = await signup({ email, password });
         console.log("회원가입 성공", response);
+        setSnackbarMessage("회원가입에 성공하였습니다!");
+        setSnackbarOpen(true);
         setIsLogin(true);
       }
     } catch (error) {
