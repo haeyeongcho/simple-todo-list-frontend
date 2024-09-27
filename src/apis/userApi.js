@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/users";
+const API_URL = process.env.REACT_APP_API_URL + "users";
 
 // 회원가입 API
 export const signup = async (userSignupDto) => {

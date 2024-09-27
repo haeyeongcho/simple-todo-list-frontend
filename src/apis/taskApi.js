@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/tasks";
+const API_URL = process.env.REACT_APP_API_URL + "tasks";
 
 // 작업 추가
 export const addTask = async (taskDto) => {
   try {
-    const response = await axios.post(API_URL, taskDto);
+    const response = await axios.post(`${API_URL}`, taskDto);
     return response.data;
   } catch (error) {
     console.error("작업 추가 실패:", error);
