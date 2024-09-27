@@ -44,6 +44,13 @@ const TodoList = () => {
     fetchTasks();
   }, [userId]);
 
+  const handleLogout = () => {
+    const isConfirmed = window.confirm("정말 로그아웃 하시겠습니까?");
+    if (isConfirmed) {
+      window.location.reload();
+    }
+  };
+
   const addTodo = async () => {
     if (!taskTitle) {
       setSnackbarMessage("할 일 제목을 입력해주세요."); // 메시지 설정
@@ -123,6 +130,14 @@ const TodoList = () => {
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
         투두 리스트
+        <Button
+          variant="text"
+          color="error"
+          onClick={handleLogout}
+          sx={{ float: "right" }} // 버튼을 오른쪽 끝으로 배치
+        >
+          로그아웃
+        </Button>
       </Typography>
       <TextField
         label="할 일 제목"
